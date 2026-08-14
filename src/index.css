@@ -1,1 +1,274 @@
 @import "tailwindcss";
+
+@theme {
+  --color-espresso-950: #140d08;
+  --color-espresso-900: #1b120c;
+  --color-espresso-850: #211610;
+  --color-espresso-800: #2a1d14;
+  --color-espresso-750: #33241a;
+  --color-espresso-700: #3d2c1f;
+  --color-espresso-600: #55402c;
+  --color-crema-500: #a98a63;
+  --color-crema-400: #bfa27c;
+  --color-crema-300: #cbb08d;
+  --color-crema-200: #ddc7a5;
+  --color-crema-100: #ead9bd;
+  --color-crema-50: #f5ecd9;
+  --color-amberhi-400: #f0b35c;
+  --color-amberhi-500: #dd9433;
+  --color-amberhi-600: #b97420;
+  --color-sage-300: #b7c49c;
+  --color-sage-400: #a3b18a;
+  --color-sage-600: #6f7f58;
+  --color-copper-500: #c26a3d;
+  --color-warmred-400: #e08a63;
+
+  --font-display: "Fraunces", "Noto Serif SC", "Songti SC", "STSong", serif;
+  --font-body: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+
+  --shadow-amber: 0 8px 40px -8px rgba(221, 148, 51, 0.35);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-espresso-950);
+  color: var(--color-crema-100);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-amberhi-500);
+  color: var(--color-espresso-950);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-espresso-600) transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--color-espresso-600);
+  border-radius: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-amberhi-500);
+  outline-offset: 2px;
+}
+
+/* ---------- 噪点覆盖层 ---------- */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- 咖啡豆纹理背景 ---------- */
+.bean-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%23dd9433' stroke-width='1.4' stroke-linecap='round' opacity='0.5'%3E%3Cpath d='M30 22c-6 0-10 5-10 12s4 12 10 12 10-5 10-12-4-12-10-12zm0 3.5c1.8 2.6 1.8 6.4 0 9.4s-1.8 7 0 9.6'/%3E%3Cpath d='M88 74c-6 0-10 5-10 12s4 12 10 12 10-5 10-12-4-12-10-12zm0 3.5c1.8 2.6 1.8 6.4 0 9.4s-1.8 7 0 9.6' transform='rotate(24 88 86)'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* ---------- 跑马灯 ---------- */
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker 32s linear infinite;
+}
+.ticker-track.reverse {
+  animation-direction: reverse;
+  animation-duration: 38s;
+}
+.ticker-shell:hover .ticker-track {
+  animation-play-state: paused;
+}
+
+/* ---------- Ken Burns ---------- */
+@keyframes kenburns {
+  from { transform: scale(1.02) translate(0, 0); }
+  to { transform: scale(1.14) translate(-1.5%, 1.5%); }
+}
+.kenburns {
+  animation: kenburns 18s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* ---------- 标题逐行揭示 ---------- */
+.mask-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+}
+.mask-line > span {
+  display: inline-block;
+  transform: translateY(120%);
+  animation: riseLine 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--d, 0s);
+}
+@keyframes riseLine {
+  to { transform: translateY(0); }
+}
+
+/* ---------- 蒸汽 ---------- */
+@keyframes steam {
+  0% { opacity: 0; transform: translateY(8px) translateX(0) scale(0.9); }
+  25% { opacity: 0.75; }
+  60% { opacity: 0.35; transform: translateY(-14px) translateX(4px) scale(1.05); }
+  100% { opacity: 0; transform: translateY(-30px) translateX(-3px) scale(1.15); }
+}
+.steam-wisp {
+  animation: steam 4.2s ease-in-out infinite;
+}
+
+/* ---------- 滚动显现 ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--d, 0s);
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- 骨架屏 ---------- */
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+.skeleton {
+  background: linear-gradient(100deg, #2a1d14 40%, #3d2c1f 50%, #2a1d14 60%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
+}
+
+/* ---------- 微动效 ---------- */
+@keyframes popIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  70% { transform: scale(1.12); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.pop-in {
+  animation: popIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translate(-50%, 16px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+.toast-in {
+  animation: toastIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes drawerIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+.drawer-in {
+  animation: drawerIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(28px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal-in {
+  animation: modalIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.fade-in {
+  animation: fadeIn 0.3s ease both;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.spin {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes floaty {
+  0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+  50% { transform: translateY(-9px) rotate(var(--r, 0deg)); }
+}
+.floaty {
+  animation: floaty 5s ease-in-out infinite;
+}
+
+/* ---------- 订单成功勾选描线 ---------- */
+.draw-circle {
+  stroke-dasharray: 320;
+  stroke-dashoffset: 320;
+  animation: drawStroke 0.7s 0.15s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.draw-check {
+  stroke-dasharray: 80;
+  stroke-dashoffset: 80;
+  animation: drawStroke 0.45s 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes drawStroke {
+  to { stroke-dashoffset: 0; }
+}
+
+/* ---------- 减少动态偏好 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .ticker-track,
+  .kenburns,
+  .steam-wisp,
+  .floaty,
+  .pop-in,
+  .skeleton,
+  .spin {
+    animation: none !important;
+  }
+  .mask-line > span {
+    animation: none;
+    transform: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .drawer-in,
+  .modal-in,
+  .toast-in,
+  .fade-in {
+    animation-duration: 0.01ms !important;
+  }
+  .draw-circle,
+  .draw-check {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
